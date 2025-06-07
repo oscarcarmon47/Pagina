@@ -3,51 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda Online</title>
-    <link rel="stylesheet" href="estilos.css">
+    <title>AgroVet México</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Tienda Online</h1>
+    <header class="header">
+        <div class="logo">AgroVet México</div>
+        <nav class="nav">
+            <button class="menu-toggle" aria-label="Menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#agroquimicos">Agroquímicos</a></li>
+                <li><a href="#veterinarios">Veterinarios</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </nav>
     </header>
-    <section class="categoria">
-        <h2>Electrónica</h2>
-        <div class="productos">
-            <div class="producto">
-                <img src="https://via.placeholder.com/150" alt="Teléfono inteligente">
-                <p>Teléfono inteligente</p>
+
+    <section id="inicio" class="hero reveal">
+        <h1>Soluciones seguras para el campo y tus animales</h1>
+    </section>
+
+    <section id="agroquimicos" class="productos reveal">
+        <h2>Productos Destacados</h2>
+        <div class="grid">
+            <div class="card">
+                <img src="https://via.placeholder.com/300x200" alt="Herbicida X">
+                <h3>Herbicida X</h3>
+                <button class="ver-mas" data-producto="Herbicida X">Ver más</button>
             </div>
-            <div class="producto">
-                <img src="https://via.placeholder.com/150" alt="Auriculares">
-                <p>Auriculares</p>
+            <div class="card">
+                <img src="https://via.placeholder.com/300x200" alt="Fertilizante Y">
+                <h3>Fertilizante Y</h3>
+                <button class="ver-mas" data-producto="Fertilizante Y">Ver más</button>
+            </div>
+            <div class="card">
+                <img src="https://via.placeholder.com/300x200" alt="Vacuna A">
+                <h3>Vacuna A</h3>
+                <button class="ver-mas" data-producto="Vacuna A">Ver más</button>
+            </div>
+            <div class="card">
+                <img src="https://via.placeholder.com/300x200" alt="Suplemento B">
+                <h3>Suplemento B</h3>
+                <button class="ver-mas" data-producto="Suplemento B">Ver más</button>
             </div>
         </div>
     </section>
-    <section class="categoria">
-        <h2>Moda</h2>
-        <div class="productos">
-            <div class="producto">
-                <img src="https://via.placeholder.com/150" alt="Chaqueta de cuero">
-                <p>Chaqueta de cuero</p>
-            </div>
-            <div class="producto">
-                <img src="https://via.placeholder.com/150" alt="Zapatos deportivos">
-                <p>Zapatos deportivos</p>
-            </div>
+
+    <section id="contacto" class="footer reveal">
+        <div class="contacto-info">
+            <p>Tel: 55-0000-0000</p>
+            <p>Email: contacto@agrovet.mx</p>
+            <p>Redes: 
+                <a href="#">Facebook</a> 
+                <a href="#">Twitter</a>
+            </p>
+        </div>
+        <div class="legal">
+            <a href="#">Aviso legal</a>
         </div>
     </section>
-    <section class="categoria">
-        <h2>Hogar</h2>
-        <div class="productos">
-            <div class="producto">
-                <img src="https://via.placeholder.com/150" alt="Lámpara de mesa">
-                <p>Lámpara de mesa</p>
-            </div>
-            <div class="producto">
-                <img src="https://via.placeholder.com/150" alt="Cafetera">
-                <p>Cafetera</p>
-            </div>
+
+    <div class="whatsapp">
+        <a href="https://wa.me/5210000000000" target="_blank" aria-label="WhatsApp">WhatsApp</a>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 id="modal-title"></h3>
+            <p id="modal-text"></p>
         </div>
-    </section>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
