@@ -43,5 +43,10 @@ window.addEventListener('click', e => {
 });
 
 document.querySelectorAll('.ver-mas').forEach(btn => {
-  btn.addEventListener('click', () => openModal(btn.dataset.producto, btn.dataset.descripcion));
+  btn.addEventListener('click', () => {
+    const card = btn.closest('.card');
+    const descEl = card.querySelector('.descripcion');
+    const desc = descEl ? descEl.textContent : btn.dataset.descripcion;
+    openModal(btn.dataset.producto, desc);
+  });
 });
