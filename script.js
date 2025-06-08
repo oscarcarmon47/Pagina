@@ -27,9 +27,9 @@ const modalTitle = document.getElementById('modal-title');
 const modalText = document.getElementById('modal-text');
 const closeBtn = document.querySelector('.close');
 
-function openModal(producto) {
+function openModal(producto, descripcion) {
   modalTitle.textContent = producto;
-  modalText.textContent = `Descripción detallada del producto ${producto}.`;
+  modalText.textContent = descripcion;
   modal.style.display = 'flex';
 }
 
@@ -43,5 +43,10 @@ window.addEventListener('click', e => {
 });
 
 document.querySelectorAll('.ver-mas').forEach(btn => {
-  btn.addEventListener('click', () => openModal(btn.dataset.producto));
+  btn.addEventListener('click', () => {
+    const card = btn.closest('.card');
+    const descEl = card.querySelector('.descripcion');
+    const desc = descEl ? descEl.textContent : btn.dataset.descripcion;
+    openModal(btn.dataset.producto, desc);
+  });
 });
