@@ -27,9 +27,9 @@ const modalTitle = document.getElementById('modal-title');
 const modalText = document.getElementById('modal-text');
 const closeBtn = document.querySelector('.close');
 
-function openModal(producto) {
+function openModal(producto, descripcion) {
   modalTitle.textContent = producto;
-  modalText.textContent = `Descripción detallada del producto ${producto}.`;
+  modalText.textContent = descripcion;
   modal.style.display = 'flex';
 }
 
@@ -43,5 +43,5 @@ window.addEventListener('click', e => {
 });
 
 document.querySelectorAll('.ver-mas').forEach(btn => {
-  btn.addEventListener('click', () => openModal(btn.dataset.producto));
+  btn.addEventListener('click', () => openModal(btn.dataset.producto, btn.dataset.descripcion));
 });
