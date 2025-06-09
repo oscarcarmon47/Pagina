@@ -99,12 +99,52 @@ body {
     margin-bottom: 2rem;
 }
 
+.controles {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.controles input {
+    padding: 0.5rem;
+    max-width: 200px;
+}
+
+.controles button {
+    margin-left: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--green);
+    background: transparent;
+    color: var(--green);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.controles button.activo {
+    background: var(--green);
+    color: #fff;
+}
+
 .grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
     max-width: 1200px;
     margin: 0 auto;
+}
+
+.grid.lista {
+    grid-template-columns: 1fr;
+}
+
+.grid.lista .card {
+    display: flex;
+    align-items: center;
+    text-align: left;
+}
+
+.grid.lista .card img {
+    width: 150px;
+    margin-right: 1rem;
 }
 
 .card {
