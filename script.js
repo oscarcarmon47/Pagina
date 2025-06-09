@@ -21,6 +21,9 @@ const obs = new IntersectionObserver(entries => {
 
 reveals.forEach(el => obs.observe(el));
 
+// Canal de comunicación entre pestañas para actualizar precios en tiempo real
+const bc = new BroadcastChannel('actualizacion-precios');
+
 // Modal de productos
 const modal = document.getElementById('modal');
 const modalTitle = document.getElementById('modal-title');
@@ -75,9 +78,21 @@ function renderProductos() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  productos = await fetch('productos.json').then(r => r.json());
+  const almacenados = localStorage.getItem('productos-actualizados');
+  if (almacenados) {
+    productos = JSON.parse(almacenados);
+  } else {
+    productos = await fetch('productos.json').then(r => r.json());
+  }
   renderProductos();
 });
+
+// Escucha mensajes de otras pestañas con precios actualizados
+bc.onmessage = e => {
+  productos = e.data;
+  localStorage.setItem('productos-actualizados', JSON.stringify(productos));
+  renderProductos();
+};
 
 document.addEventListener('click', e => {
   if (e.target.classList.contains('ver-mas')) {
@@ -121,5 +136,33 @@ function filtrarCards() {
 if (buscador && filtroIngrediente) {
   buscador.addEventListener('input', filtrarCards);
   filtroIngrediente.addEventListener('change', filtrarCards);
+}
+
+// --- Carga de precios desde Excel en admin.html ---
+const excelInput = document.getElementById('excelFile');
+const cargarExcelBtn = document.getElementById('cargarExcel');
+
+async function procesarExcel(file) {
+  const data = await file.arrayBuffer();
+  const workbook = XLSX.read(data, { type: 'array' });
+  const sheet = workbook.Sheets[workbook.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json(sheet);
+  rows.forEach(row => {
+    const nombre = row.nombre || row.Nombre;
+    const precio = row.precio || row.Precio;
+    if (!nombre || precio === undefined) return;
+    const prod = productos.find(p => p.nombre === nombre);
+    if (prod) prod.precio = precio;
+  });
+  localStorage.setItem('productos-actualizados', JSON.stringify(productos));
+  bc.postMessage(productos);
+  renderProductos();
+}
+
+if (cargarExcelBtn && excelInput) {
+  cargarExcelBtn.addEventListener('click', () => {
+    const file = excelInput.files[0];
+    if (file) procesarExcel(file);
+  });
 }
 
