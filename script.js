@@ -121,3 +121,30 @@ if (buscador && filtroIngrediente) {
   buscador.addEventListener('input', filtrarCards);
   filtroIngrediente.addEventListener('change', filtrarCards);
 }
+
+const input = document.getElementById('excelFile');
+const btn = document.getElementById('cargarExcel');
+btn && btn.addEventListener('click', () => {
+  if (!input.files.length) return alert('Selecciona un archivo Excel primero');
+  const reader = new FileReader();
+  reader.onload = e => {
+    const data = new Uint8Array(e.target.result);
+    const wb = XLSX.read(data, { type: 'array' });
+    const sheet = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet);
+    const precios = {};
+    rows.forEach(r => precios[r.Nombre.trim()] = r.Precio);
+    document.querySelectorAll('.card').forEach(card => {
+      const nombre = card.querySelector('h3').textContent.trim();
+      let p = card.querySelector('.precio');
+      const precio = precios[nombre] ?? '—';
+      if (!p) {
+        p = document.createElement('p');
+        p.className = 'precio';
+        card.appendChild(p);
+      }
+      p.textContent = `Precio: ${precio}`;
+    });
+  };
+  reader.readAsArrayBuffer(input.files[0]);
+});
