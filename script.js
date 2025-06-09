@@ -29,7 +29,7 @@ const closeBtn = document.querySelector('.close');
 
 function openModal(producto, descripcion) {
   modalTitle.textContent = producto;
-  modalText.textContent = descripcion;
+  modalText.textContent = descripcion || '';
   modal.style.display = 'flex';
 }
 
@@ -53,11 +53,11 @@ function crearCard(p) {
   const div = document.createElement('div');
   div.className = 'card';
   div.innerHTML = `
-    <img src="${p.imagen}" alt="${p.nombre}">
+    <img src="images/${p.nombre}.jpg" alt="${p.nombre}">
     <h3>${p.nombre}</h3>
     <p>Ingrediente activo: ${p.ingrediente}</p>
-    <p class="precio">$${p.precio}</p>
-    <button class="ver-mas" data-producto="${p.nombre}" data-descripcion="${p.descripcion}">Ver más</button>
+    <p class="precio">Precio: ${p.precio}</p>
+    <button class="ver-mas" data-producto="${p.nombre}">Ver más</button>
   `;
   return div;
 }
@@ -74,9 +74,10 @@ function renderProductos() {
   });
 }
 
-fetch('productos.json')
-  .then(r => r.json())
-  .then(data => { productos = data; renderProductos(); });
+document.addEventListener('DOMContentLoaded', async () => {
+  productos = await fetch('productos.json').then(r => r.json());
+  renderProductos();
+});
 
 document.addEventListener('click', e => {
   if (e.target.classList.contains('ver-mas')) {
@@ -148,6 +149,15 @@ btn && btn.addEventListener('click', () => {
       `;
       grid && grid.appendChild(card);
     });
+
+    // Exportar JSON actualizado
+    const blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'productos.json';
+    a.textContent = 'Descargar productos.json actualizado';
+    document.body.appendChild(a);
   };
   reader.readAsArrayBuffer(input.files[0]);
 });
