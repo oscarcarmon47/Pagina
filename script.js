@@ -132,18 +132,21 @@ btn && btn.addEventListener('click', () => {
     const wb = XLSX.read(data, { type: 'array' });
     const sheet = wb.Sheets[wb.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_json(sheet);
-    const precios = {};
-    rows.forEach(r => precios[r.Nombre.trim()] = r.Precio);
-    document.querySelectorAll('.card').forEach(card => {
-      const nombre = card.querySelector('h3').textContent.trim();
-      let p = card.querySelector('.precio');
-      const precio = precios[nombre] ?? '—';
-      if (!p) {
-        p = document.createElement('p');
-        p.className = 'precio';
-        card.appendChild(p);
-      }
-      p.textContent = `Precio: ${precio}`;
+
+    document.querySelectorAll('.grid').forEach(g => g.innerHTML = '');
+    const grid = document.querySelector('.veterinarios') || document.querySelector('.grid');
+
+    rows.forEach(r => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <img src="" alt="${r.Nombre}">
+        <h3>${r.Nombre}</h3>
+        <p>Ingrediente activo: ${r.Ingrediente}</p>
+        <p class="precio">Precio: ${r.Precio}</p>
+        <button class="ver-mas" data-producto="${r.Nombre}" data-descripcion="">Ver más</button>
+      `;
+      grid && grid.appendChild(card);
     });
   };
   reader.readAsArrayBuffer(input.files[0]);
