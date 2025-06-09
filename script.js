@@ -50,3 +50,24 @@ document.querySelectorAll('.ver-mas').forEach(btn => {
     openModal(btn.dataset.producto, desc);
   });
 });
+
+// Buscador y filtros en lista.html
+const buscador = document.getElementById('buscador');
+const filtroIngrediente = document.getElementById('filtro-ingrediente');
+
+function filtrarCards() {
+  const texto = buscador.value.toLowerCase();
+  const filtro = filtroIngrediente.value;
+  document.querySelectorAll('.grid .card').forEach(card => {
+    const nombre = card.querySelector('h3').textContent.toLowerCase();
+    const ingText = card.querySelector('p').textContent.replace('Ingrediente activo:', '').trim();
+    const coincideNombre = nombre.includes(texto);
+    const coincideIng = filtro === 'Todas' || ingText === filtro;
+    card.style.display = (coincideNombre && coincideIng) ? '' : 'none';
+  });
+}
+
+if (buscador && filtroIngrediente) {
+  buscador.addEventListener('input', filtrarCards);
+  filtroIngrediente.addEventListener('change', filtrarCards);
+}
