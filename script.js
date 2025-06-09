@@ -51,7 +51,11 @@ function attachModalEvents() {
       openModal(btn.dataset.producto, desc);
     });
   });
+
 }
+
+});
+ main
 
 // Buscador y filtros en lista.html
 const buscador = document.getElementById('buscador');
@@ -73,6 +77,7 @@ if (buscador && filtroIngrediente) {
   buscador.addEventListener('input', filtrarCards);
   filtroIngrediente.addEventListener('change', filtrarCards);
 }
+
 
 // Cargar productos desde JSON
 function crearCard(prod) {
@@ -149,3 +154,4 @@ async function cargarProductos() {
 }
 
 cargarProductos();
+ main
