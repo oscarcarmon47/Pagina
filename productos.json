@@ -1,0 +1,92 @@
+[
+  {
+    "categoria": "veterinarios",
+    "nombre": "Iverfull Pasta",
+    "ingrediente": "Ivermectina + Fenbendazol",
+    "descripcion": "Pasta oral de amplio espectro para equinos. Controla parásitos gastrointestinales, pulmonares, renales, y ectoparásitos como ácaros, piojos y larvas de insectos. Puede usarse durante la gestación.",
+    "mostrarDescripcion": false,
+    "imagen": "images/iverfull-pasta.jpg",
+    "precio": "250"
+  },
+  {
+    "categoria": "veterinarios",
+    "nombre": "NexGard",
+    "ingrediente": "Afoxolaner",
+    "descripcion": "Comprimido masticable mensual para perros. Elimina pulgas y varias especies de garrapatas, con acción rápida y continua. Indicado para perros mayores de 8 semanas y más de 2 kg.",
+    "mostrarDescripcion": false,
+    "imagen": "images/nexgard.jpg",
+    "precio": "300"
+  },
+  {
+    "categoria": "veterinarios",
+    "nombre": "Bravecto",
+    "ingrediente": "Fluralaner",
+    "descripcion": "Antiparasitario sistémico de larga duración para perros, disponible en presentación masticable o spot-on. Controla pulgas, garrapatas y ácaros por hasta 12 semanas.",
+    "mostrarDescripcion": false,
+    "imagen": "images/bravecto.png",
+    "precio": "450"
+  },
+  {
+    "categoria": "veterinarios",
+    "nombre": "IverQuest",
+    "ingrediente": "Ivermectina",
+    "descripcion": "Gel oral sabor manzana para caballos. Actúa contra nematodos gastrointestinales, pulmonares y algunos ectoparásitos. De fácil administración y buena palatabilidad.",
+    "mostrarDescripcion": false,
+    "imagen": "images/iverquest.jpg",
+    "precio": "275"
+  },
+  {
+    "categoria": "agroquimicos",
+    "nombre": "Faena Clásico",
+    "ingrediente": "Glifosato (sal de potasio) al 35–36 %",
+    "descripcion": "Herbicida sistémico no selectivo de amplio espectro. Se aplica por aspersión foliar y se trasloca por el sistema vascular de la planta, eliminando malezas activas en 3–7 días.",
+    "mostrarDescripcion": true,
+    "imagen": "images/faena-clasico.jpg",
+    "precio": "380"
+  },
+  {
+    "categoria": "agroquimicos",
+    "nombre": "Dragon 101",
+    "ingrediente": "Picloram + 2,4-D",
+    "descripcion": "Herbicida sistémico y selectivo, diseñado para el control de malezas de hoja ancha y leñosas en potreros. Actúa en post-emergencia y no daña los pastos establecidos.",
+    "mostrarDescripcion": true,
+    "imagen": "images/dragon-101.jpg",
+    "precio": "410"
+  },
+  {
+    "categoria": "agroquimicos",
+    "nombre": "Fitoamina 40",
+    "ingrediente": "2,4-D (sal dimetilamina) al 83 %",
+    "descripcion": "Herbicida selectivo post-emergente que controla malezas de hoja ancha en cultivos como maíz, sorgo, caña, arroz, trigo y cebada. Actúa como una auxina sintética que desordena el crecimiento de las malezas.",
+    "mostrarDescripcion": true,
+    "imagen": "images/fitoamina-40.jpg",
+    "precio": "290"
+  },
+  {
+    "categoria": "agroquimicos",
+    "nombre": "Antorcha®",
+    "ingrediente": "Paraquat (≈ 25 %)",
+    "descripcion": "Herbicida no selectivo de contacto que actúa rápidamente al entrar en contacto con el follaje de las malezas, causando desecación en presencia de luz.",
+    "mostrarDescripcion": true,
+    "imagen": "images/antorcha.jpg",
+    "precio": "315"
+  },
+  {
+    "categoria": "agroquimicos",
+    "nombre": "Paraquat",
+    "ingrediente": "Paraquat",
+    "descripcion": "Herbicida no selectivo de contacto que actúa inhibiendo la fotosíntesis mediante la generación de radicales libres. Se usa para desecación de cultivos y control rápido de malezas. Es altamente tóxico para humanos, con uso restringido.",
+    "mostrarDescripcion": true,
+    "imagen": "images/paraquat.jpg",
+    "precio": "265"
+  },
+  {
+    "categoria": "agroquimicos",
+    "nombre": "Garlon 4 Ultra",
+    "ingrediente": "Triclopyr (éster butoxietil 61.6 %)",
+    "descripcion": "Herbicida sistémico selectivo para el control de malezas de hoja ancha y plantas leñosas. No afecta pastos ni árboles como las coníferas. Se trasloca rápidamente y se degrada en suelos en menos de 90 días.",
+    "mostrarDescripcion": true,
+    "imagen": "images/garlon-4-ultra.jpg",
+    "precio": "425"
+  }
+]
