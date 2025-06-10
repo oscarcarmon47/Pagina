@@ -22,13 +22,14 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    background: #fff;
+    background: #267e29;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 1rem;
     z-index: 1000;
+    color: var(--white);
 }
 
 .logo {
@@ -48,12 +49,12 @@ body {
 
 .nav-menu a {
     text-decoration: none;
-    color: var(--dark-gray);
+     color: var(--white);
     transition: color var(--transition);
 }
 
 .nav-menu a:hover {
-    color: var(--green);
+    color: rgba(255,255,255,0.8);
 }
 
 .menu-toggle {
@@ -79,9 +80,10 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
-    background: #fff;
+   background: url("images/background.PNG") center/cover no-repeat;
     padding: 2rem;
-    margin-top: 60px;
+    margin-top: 0px;
+      color: var(--white);
 }
 
 .hero h1 {
