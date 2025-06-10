@@ -189,8 +189,10 @@ btn?.addEventListener('click', () => {
       if (!container) return;
       const card = document.createElement('div');
       card.className = 'card';
+
+      const imgPath = `images/${r.Imagen.trim()}`;
       card.innerHTML = `
-        <img src="images/${r.Nombre.trim()}.jpg" alt="${r.Nombre.trim()}">
+        <img src="${imgPath}" alt="${r.Nombre.trim()}">
         <h3>${r.Nombre.trim()}</h3>
         <p>Ingrediente activo: ${r.Ingrediente}</p>
         <p class="precio">${formatter.format(r.Precio)}</p>
