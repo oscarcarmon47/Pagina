@@ -204,3 +204,65 @@ btn?.addEventListener('click', () => {
   reader.readAsArrayBuffer(input.files[0]);
 });
 
+// --- Gestión de productos en admin.html ---
+let adminProductos = [];
+
+async function fetchProductos() {
+  const list = document.getElementById('admin-list');
+  if (!list) return;
+  const res = await fetch('/api/productos');
+  adminProductos = await res.json();
+  list.innerHTML = '';
+  adminProductos.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'admin-card';
+    div.dataset.id = p.id;
+    div.innerHTML = `${p.nombre} — ${p.precio} MXN
+      <button class="edit">✎</button>
+      <button class="delete">🗑</button>`;
+    list.appendChild(div);
+  });
+}
+
+document.getElementById('admin-list')?.addEventListener('click', async e => {
+  const card = e.target.closest('.admin-card');
+  if (!card) return;
+  const id = card.dataset.id;
+  if (e.target.classList.contains('edit')) {
+    const form = document.getElementById('product-form');
+    const prod = adminProductos.find(p => p.id == id);
+    if (form && prod) {
+      form.elements.id.value = prod.id;
+      form.elements.nombre.value = prod.nombre;
+      form.elements.ingrediente.value = prod.ingrediente;
+      form.elements.precio.value = prod.precio;
+      form.elements.categoria.value = prod.categoria;
+      form.elements.imagen.value = prod.imagen || '';
+    }
+  }
+  if (e.target.classList.contains('delete')) {
+    await fetch(`/api/productos/${id}`, { method: 'DELETE' });
+    fetchProductos();
+  }
+});
+
+document.getElementById('product-form')?.addEventListener('submit', async e => {
+  e.preventDefault();
+  const form = e.target;
+  const data = Object.fromEntries(new FormData(form).entries());
+  const id = data.id;
+  const method = id ? 'PUT' : 'POST';
+  const url = id ? `/api/productos/${id}` : '/api/productos';
+  await fetch(url, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  form.reset();
+  fetchProductos();
+});
+
+if (document.getElementById('admin-list')) {
+  fetchProductos();
+}
+

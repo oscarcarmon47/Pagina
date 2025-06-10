@@ -29,6 +29,18 @@
             <input type="file" id="excelFile" accept=".xlsx, .xls" />
             <button id="cargarExcel">Cargar precios desde Excel</button>
         </div>
+
+        <div id="admin-list"></div>
+
+        <form id="product-form">
+            <input type="hidden" name="id">
+            <input name="nombre" placeholder="Nombre">
+            <input name="ingrediente" placeholder="Ingrediente">
+            <input type="number" step="0.01" name="precio" placeholder="Precio">
+            <input name="categoria" placeholder="Categoría">
+            <input name="imagen" placeholder="Imagen">
+            <button type="submit">Guardar</button>
+        </form>
     </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
