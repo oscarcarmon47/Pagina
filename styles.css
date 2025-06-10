@@ -166,8 +166,9 @@ body {
 
 .card img {
     width: 100%;
-    height: auto;
-    display: block;
+    height: 200px;           /* ajusta la altura según el diseño */
+    object-fit: cover;       /* recorta y escala para llenar */
+    display: block;          /* elimina espacios en línea */
 }
 
 .card h3 {
