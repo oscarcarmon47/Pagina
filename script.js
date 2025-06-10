@@ -173,11 +173,27 @@ const formatter = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 
 btn?.addEventListener('click', () => {
   if (!input?.files?.length) return alert('Selecciona un archivo Excel primero');
   const reader = new FileReader();
-  reader.onload = e => {
+  reader.onload = async e => {
     const data = new Uint8Array(e.target.result);
     const wb = XLSX.read(data, { type: 'array' });
     const sheet = wb.Sheets[wb.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_json(sheet);
+// Importar cada producto al servidor
+for (const r of rows) {
+  await fetch('http://localhost:3000/api/productos', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      nombre:      r.Nombre,
+      ingrediente: r.Ingrediente,
+      precio:      r.Precio,
+      categoria:   r.Categoría.toLowerCase(),
+      imagen:      r.Imagen
+    })
+  });
+}
+// Refrescar la lista de admin
+fetchProductos();
 
     // Limpiar cada grid (veterinarios y agroquímicos)
     document.querySelectorAll('.grid').forEach(grid => grid.innerHTML = '');
