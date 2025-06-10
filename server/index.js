@@ -18,6 +18,42 @@ app.get('/api/productos', (req, res) => {
   });
 });
 
+// POST /api/productos
+app.post('/api/productos', (req, res) => {
+  const { nombre, ingrediente, precio, categoria, imagen } = req.body;
+  const db = new sqlite3.Database(path.join(__dirname, 'db.sqlite'));
+  const sql = `INSERT INTO productos (nombre, ingrediente, precio, categoria, imagen) VALUES (?, ?, ?, ?, ?)`;
+  db.run(sql, [nombre, ingrediente, precio, categoria, imagen], function (err) {
+    db.close();
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ id: this.lastID });
+  });
+});
+
+// PUT /api/productos/:id
+app.put('/api/productos/:id', (req, res) => {
+  const { nombre, ingrediente, precio, categoria, imagen } = req.body;
+  const { id } = req.params;
+  const db = new sqlite3.Database(path.join(__dirname, 'db.sqlite'));
+  const sql = `UPDATE productos SET nombre = ?, ingrediente = ?, precio = ?, categoria = ?, imagen = ? WHERE id = ?`;
+  db.run(sql, [nombre, ingrediente, precio, categoria, imagen, id], function (err) {
+    db.close();
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ changes: this.changes });
+  });
+});
+
+// DELETE /api/productos/:id
+app.delete('/api/productos/:id', (req, res) => {
+  const { id } = req.params;
+  const db = new sqlite3.Database(path.join(__dirname, 'db.sqlite'));
+  db.run('DELETE FROM productos WHERE id = ?', [id], function (err) {
+    db.close();
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ changes: this.changes });
+  });
+});
+
 // GET /api/exportar
 app.get('/api/exportar', async (req, res) => {
   const db = new sqlite3.Database(path.join(__dirname, 'db.sqlite'));
