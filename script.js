@@ -166,3 +166,39 @@ if (cargarExcelBtn && excelInput) {
   });
 }
 
+const input = document.getElementById('excelFile');
+const btn = document.getElementById('cargarExcel');
+const formatter = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
+
+btn?.addEventListener('click', () => {
+  if (!input?.files?.length) return alert('Selecciona un archivo Excel primero');
+  const reader = new FileReader();
+  reader.onload = e => {
+    const data = new Uint8Array(e.target.result);
+    const wb = XLSX.read(data, { type: 'array' });
+    const sheet = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet);
+
+    // Limpiar cada grid (veterinarios y agroquímicos)
+    document.querySelectorAll('.grid').forEach(grid => grid.innerHTML = '');
+
+    // Crear tarjetas desde el Excel
+    rows.forEach(r => {
+      const key = r.Categoría?.toLowerCase() === 'veterinarios' ? 'veterinarios' : 'agroquimicos';
+      const container = document.querySelector(`.grid.${key}`);
+      if (!container) return;
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <img src="images/${r.Nombre.trim()}.jpg" alt="${r.Nombre.trim()}">
+        <h3>${r.Nombre.trim()}</h3>
+        <p>Ingrediente activo: ${r.Ingrediente}</p>
+        <p class="precio">${formatter.format(r.Precio)}</p>
+        <button class="ver-mas" data-producto="${r.Nombre.trim()}">Ver más</button>
+      `;
+      container.appendChild(card);
+    });
+  };
+  reader.readAsArrayBuffer(input.files[0]);
+});
+
