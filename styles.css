@@ -285,3 +285,28 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* Position hero logo and adjust text */
+.hero {
+    position: relative;
+    overflow: hidden;
+}
+.hero-logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: auto;
+    opacity: 0.8;
+    z-index: 1;
+    pointer-events: none;
+}
+.hero h1 {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+    margin: 0 auto;
+    padding-top: 2rem;
+    color: var(--white);
+}
