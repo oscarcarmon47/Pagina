@@ -165,10 +165,11 @@ body {
 }
 
 .card img {
-    width: 100%;
-    height: 200px;           /* ajusta la altura según el diseño */
-    object-fit: cover;       /* recorta y escala para llenar */
-    display: block;          /* elimina espacios en línea */
+    width: 100%;        /* ocupa todo el ancho de la card */
+    height: auto;       /* ajusta altura según proporción */
+    max-height: 200px;  /* opcional: límite de altura */
+    object-fit: contain; /* escala sin recortar */
+    display: block;     /* elimina espacios en línea */
 }
 
 .card h3 {
