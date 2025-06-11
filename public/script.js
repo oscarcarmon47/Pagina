@@ -148,39 +148,43 @@ if (buscador && filtroIngrediente) {
 }
 
 // Carga de precios desde Excel en admin.html
-const excelInput = document.getElementById('excelFile');
+const inputFile = document.getElementById('input-file');
 const cargarExcelBtn = document.getElementById('cargarExcel');
 
-if (cargarExcelBtn && excelInput) {
-  cargarExcelBtn.addEventListener('click', async () => {
-    const file = excelInput.files?.[0];
+if (cargarExcelBtn && inputFile) {
+  cargarExcelBtn.addEventListener('click', () => {
+    const file = document.getElementById('input-file').files[0];
     if (!file) return;
 
-    const data = await file.arrayBuffer();
-    const workbook = XLSX.read(data, { type: 'array' });
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+    const reader = new FileReader();
+    reader.onload = () => {
+      const data = reader.result;
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
 
-    for (const row of rows) {
-      const payload = {
-        nombre: row['Nombre'],
-        ingrediente: row['Ingrediente'],
-        precio: parseFloat(row['Precio']),
-        categoria: row['Categoría'],
-        imagen: row['Imagen']
-      };
+      rows.forEach(row => {
+        const payload = {
+          nombre: row['Nombre'],
+          ingrediente: row['Ingrediente'],
+          precio: parseFloat(row['Precio']),
+          categoria: row['Categoría'],
+          imagen: row['Imagen']
+        };
 
-      try {
-        await fetch('http://localhost:3000/api/productos', {
+        fetch('http://localhost:3000/api/productos', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
-        });
-        console.log('Subido:', payload.nombre);
-      } catch (err) {
-        console.error('Error al subir', payload.nombre, err);
-      }
-    }
+        })
+        .then(res => {
+          if (res.ok) console.log('Subido:', payload.nombre);
+          else console.error('Error:', payload.nombre, res.statusText);
+        })
+        .catch(err => console.error(err));
+      });
+    };
+    reader.readAsArrayBuffer(file);
   });
 }
 
