@@ -46,9 +46,10 @@ window.addEventListener('click', e => {
   if (e.target === modal) closeModal();
 });
 
-// Renderizado de productos desde productos.json
+// Contenedores de productos
 const contVet = document.getElementById('veterinarios-container');
 const contAgr = document.getElementById('agroquimicos-container');
+const contLista = document.getElementById('lista-container');
 const vistaGridBtn = document.getElementById('vista-grid');
 const vistaListaBtn = document.getElementById('vista-lista');
 let productos = [];
@@ -67,31 +68,34 @@ function crearCard(p) {
 }
 
 function renderProductos() {
-  if (!contVet || !contAgr) return;
   const query = buscador ? buscador.value.toLowerCase() : '';
-  contVet.innerHTML = '';
-  contAgr.innerHTML = '';
-  productos.forEach(p => {
-    if (!p.nombre.toLowerCase().includes(query)) return;
-    const card = crearCard(p);
-    if (p.categoria === 'veterinarios') contVet.appendChild(card); else contAgr.appendChild(card);
-  });
+  if (contVet || contAgr) {
+    contVet && (contVet.innerHTML = '');
+    contAgr && (contAgr.innerHTML = '');
+    productos.forEach(p => {
+      if (!p.nombre.toLowerCase().includes(query)) return;
+      const card = crearCard(p);
+      if (p.categoria === 'veterinarios' && contVet) contVet.appendChild(card);
+      else if (contAgr) contAgr.appendChild(card);
+    });
+  } else if (contLista) {
+    contLista.innerHTML = '';
+    productos.forEach(p => {
+      if (!p.nombre.toLowerCase().includes(query)) return;
+      contLista.appendChild(crearCard(p));
+    });
+  }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const almacenados = localStorage.getItem('productos-actualizados');
-  if (almacenados) {
-    productos = JSON.parse(almacenados);
-  } else {
-    productos = await fetch('productos.json').then(r => r.json());
-  }
+  const res = await fetch('/api/productos');
+  productos = await res.json();
   renderProductos();
 });
 
 // Escucha mensajes de otras pestañas con precios actualizados
 bc.onmessage = e => {
   productos = e.data;
-  localStorage.setItem('productos-actualizados', JSON.stringify(productos));
   renderProductos();
 };
 
@@ -103,8 +107,12 @@ document.addEventListener('click', e => {
 
 
 function toggleVista(lista) {
-  if (!contVet || !contAgr) return;
-  [contVet, contAgr].forEach(c => c.classList.toggle('lista', lista));
+  if (contVet || contAgr) {
+    contVet && contVet.classList.toggle('lista', lista);
+    contAgr && contAgr.classList.toggle('lista', lista);
+  } else if (contLista) {
+    contLista.classList.toggle('lista', lista);
+  }
   if (vistaGridBtn && vistaListaBtn) {
     vistaGridBtn.classList.toggle('activo', !lista);
     vistaListaBtn.classList.toggle('activo', lista);
@@ -118,7 +126,7 @@ if (vistaListaBtn) vistaListaBtn.addEventListener('click', () => toggleVista(tru
 const buscador = document.getElementById('buscador');
 const filtroIngrediente = document.getElementById('filtro-ingrediente');
 
-if (buscador && contVet) {
+if (buscador) {
   buscador.addEventListener('input', renderProductos);
 }
 
@@ -137,149 +145,5 @@ function filtrarCards() {
 if (buscador && filtroIngrediente) {
   buscador.addEventListener('input', filtrarCards);
   filtroIngrediente.addEventListener('change', filtrarCards);
-}
-
-// --- Carga de precios desde Excel en admin.html ---
-const excelInput = document.getElementById('excelFile');
-const cargarExcelBtn = document.getElementById('cargarExcel');
-
-async function procesarExcel(file) {
-  const data = await file.arrayBuffer();
-  const workbook = XLSX.read(data, { type: 'array' });
-  const sheet = workbook.Sheets[workbook.SheetNames[0]];
-  const rows = XLSX.utils.sheet_to_json(sheet);
-  rows.forEach(row => {
-    const nombre = row.nombre || row.Nombre;
-    const precio = row.precio || row.Precio;
-    if (!nombre || precio === undefined) return;
-    const prod = productos.find(p => p.nombre === nombre);
-    if (prod) prod.precio = precio;
-  });
-  localStorage.setItem('productos-actualizados', JSON.stringify(productos));
-  bc.postMessage(productos);
-  renderProductos();
-}
-
-if (cargarExcelBtn && excelInput) {
-  cargarExcelBtn.addEventListener('click', () => {
-    const file = excelInput.files[0];
-    if (file) procesarExcel(file);
-  });
-}
-
-const input = document.getElementById('excelFile');
-const btn = document.getElementById('cargarExcel');
-const formatter = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
-
-btn?.addEventListener('click', () => {
-  if (!input?.files?.length) return alert('Selecciona un archivo Excel primero');
-  const reader = new FileReader();
-  reader.onload = async e => {
-    const data = new Uint8Array(e.target.result);
-    const wb = XLSX.read(data, { type: 'array' });
-    const sheet = wb.Sheets[wb.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(sheet);
-// Importar cada producto al servidor
-for (const r of rows) {
-  await fetch('http://localhost:3000/api/productos', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      nombre:      r.Nombre,
-      ingrediente: r.Ingrediente,
-      precio:      r.Precio,
-      categoria:   r.Categoría.toLowerCase(),
-      imagen:      r.Imagen
-    })
-  });
-}
-// Refrescar la lista de admin
-fetchProductos();
-
-    // Limpiar cada grid (veterinarios y agroquímicos)
-    document.querySelectorAll('.grid').forEach(grid => grid.innerHTML = '');
-
-    // Crear tarjetas desde el Excel
-    rows.forEach(r => {
-      const key = r.Categoría?.toLowerCase() === 'veterinarios' ? 'veterinarios' : 'agroquimicos';
-      const container = document.querySelector(`.grid.${key}`);
-      if (!container) return;
-      const card = document.createElement('div');
-      card.className = 'card';
-
-      const imgPath = `images/${r.Imagen.trim()}`;
-      card.innerHTML = `
-        <img src="${imgPath}" alt="${r.Nombre.trim()}">
-        <h3>${r.Nombre.trim()}</h3>
-        <p>Ingrediente activo: ${r.Ingrediente}</p>
-        <p class="precio">${formatter.format(r.Precio)}</p>
-        <button class="ver-mas" data-producto="${r.Nombre.trim()}">Ver más</button>
-      `;
-      container.appendChild(card);
-    });
-  };
-  reader.readAsArrayBuffer(input.files[0]);
-});
-
-// --- Gestión de productos en admin.html ---
-let adminProductos = [];
-
-async function fetchProductos() {
-  const list = document.getElementById('admin-list');
-  if (!list) return;
-  const res = await fetch('/api/productos');
-  adminProductos = await res.json();
-  list.innerHTML = '';
-  adminProductos.forEach(p => {
-    const div = document.createElement('div');
-    div.className = 'admin-card';
-    div.dataset.id = p.id;
-    div.innerHTML = `${p.nombre} — ${p.precio} MXN
-      <button class="edit">✎</button>
-      <button class="delete">🗑</button>`;
-    list.appendChild(div);
-  });
-}
-
-document.getElementById('admin-list')?.addEventListener('click', async e => {
-  const card = e.target.closest('.admin-card');
-  if (!card) return;
-  const id = card.dataset.id;
-  if (e.target.classList.contains('edit')) {
-    const form = document.getElementById('product-form');
-    const prod = adminProductos.find(p => p.id == id);
-    if (form && prod) {
-      form.elements.id.value = prod.id;
-      form.elements.nombre.value = prod.nombre;
-      form.elements.ingrediente.value = prod.ingrediente;
-      form.elements.precio.value = prod.precio;
-      form.elements.categoria.value = prod.categoria;
-      form.elements.imagen.value = prod.imagen || '';
-    }
-  }
-  if (e.target.classList.contains('delete')) {
-    await fetch(`/api/productos/${id}`, { method: 'DELETE' });
-    fetchProductos();
-  }
-});
-
-document.getElementById('product-form')?.addEventListener('submit', async e => {
-  e.preventDefault();
-  const form = e.target;
-  const data = Object.fromEntries(new FormData(form).entries());
-  const id = data.id;
-  const method = id ? 'PUT' : 'POST';
-  const url = id ? `/api/productos/${id}` : '/api/productos';
-  await fetch(url, {
-    method,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  });
-  form.reset();
-  fetchProductos();
-});
-
-if (document.getElementById('admin-list')) {
-  fetchProductos();
 }
 
