@@ -75,15 +75,18 @@ body {
 }
 
 .hero {
+    position: relative;
+    overflow: hidden;
     height: 60vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-   background: url("images/background.PNG") center/cover no-repeat;
+    background: url("images/background.PNG") center/cover no-repeat;
     padding: 2rem;
     margin-top: 0px;
-      color: var(--white);
+    color: var(--white);
 }
 
 .hero h1 {
@@ -275,6 +278,9 @@ body {
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         display: none;
     }
+    .nav-menu a {
+        color: var(--dark-gray);
+    }
     .nav-menu.open {
         display: flex;
     }
@@ -287,23 +293,12 @@ body {
 }
 
 
-.hero {
-    position: relative;
-    overflow: hidden;
-}
 .hero-logo {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  width: clamp(80px, 15vw, 200px);
-  height: auto;
-
-  opacity: 1.0;
-
-  z-index: 1;
-  pointer-events: none;
+    width: clamp(150px, 40vw, 400px);
+    max-width: 90%;
+    height: auto;
+    margin: 0 auto 1rem;
+    pointer-events: none;
 }
 .hero h1 {
     position: relative;
