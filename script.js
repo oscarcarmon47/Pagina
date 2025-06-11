@@ -5,6 +5,7 @@ const navMenu = document.querySelector('.nav-menu');
 if (toggle) {
   toggle.addEventListener('click', () => {
     navMenu.classList.toggle('open');
+    toggle.classList.toggle('open');
   });
 }
 
