@@ -59,7 +59,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const contLista = document.getElementById('lista-container');
   const vistaGridBtn = document.getElementById('vista-grid');
   const vistaListaBtn = document.getElementById('vista-lista');
+  const adminList = document.getElementById('admin-lista');
+  const categoriaSelect = document.getElementById('categoriaSelect');
+  const productForm = document.getElementById('product-form');
   let productos = [];
+
+  async function renderAdminList() {
+    if (!adminList) return;
+    adminList.innerHTML = '';
+    const res = await fetch('/api/productos');
+    const data = await res.json();
+    data.forEach(p => {
+      const li = document.createElement('li');
+      li.innerHTML = `${p.nombre} – ${p.categoria} <button data-id="${p.id}" class="btn-delete">Eliminar</button>`;
+      adminList.appendChild(li);
+    });
+  }
+
+  if (adminList) {
+    renderAdminList();
+  }
 
   function crearCard(p) {
     const div = document.createElement('div');
@@ -153,23 +172,51 @@ document.addEventListener('DOMContentLoaded', () => {
     filtroIngrediente.addEventListener('change', filtrarCards);
   }
 
+  if (adminList) {
+    adminList.addEventListener('click', async e => {
+      if (e.target.classList.contains('btn-delete')) {
+        const id = e.target.dataset.id;
+        await fetch(`/api/productos/${id}`, { method: 'DELETE' });
+        renderAdminList();
+      }
+    });
+  }
+
+  if (productForm) {
+    productForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const formData = new FormData(productForm);
+      const data = Object.fromEntries(formData.entries());
+      data.categoria = categoriaSelect ? categoriaSelect.value : data.categoria;
+      const method = data.id ? 'PUT' : 'POST';
+      const url = data.id ? `/api/productos/${data.id}` : '/api/productos';
+      await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      productForm.reset();
+      renderAdminList();
+    });
+  }
+
   // Carga de precios desde Excel en admin.html
   const inputFile = document.getElementById('input-file');
   const cargarExcelBtn = document.getElementById('cargarExcel');
 
   if (cargarExcelBtn && inputFile) {
-    cargarExcelBtn.addEventListener('click', () => {
-      const file = document.getElementById('input-file').files[0];
+    cargarExcelBtn.addEventListener('click', async () => {
+      const file = inputFile.files[0];
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = () => {
+      reader.onload = async () => {
         const data = reader.result;
         const workbook = XLSX.read(data, { type: 'array' });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
 
-        rows.forEach(row => {
+        for (const row of rows) {
           const payload = {
             nombre: row['Nombre'],
             ingrediente: row['Ingrediente'],
@@ -178,17 +225,19 @@ document.addEventListener('DOMContentLoaded', () => {
             imagen: row['Imagen']
           };
 
-          fetch('/api/productos', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          })
-          .then(res => {
+          try {
+            const res = await fetch('/api/productos', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
             if (res.ok) console.log('Subido:', payload.nombre);
             else console.error('Error:', payload.nombre, res.statusText);
-          })
-          .catch(err => console.error(err));
-        });
+          } catch (err) {
+            console.error(err);
+          }
+        }
+        renderAdminList();
       };
       reader.readAsArrayBuffer(file);
     });
