@@ -300,6 +300,12 @@ body {
     margin: 0 auto 1rem;
     pointer-events: none;
 }
+
+@media (max-width: 768px) {
+    .hero-logo {
+        width: clamp(200px, 60vw, 400px);
+    }
+}
 .hero h1 {
     position: relative;
     top:-80px;
