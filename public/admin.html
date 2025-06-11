@@ -46,9 +46,21 @@
             <button type="submit">Guardar</button>
         </form>
 
-        <h2>Productos existentes</h2>
-        <ul id="admin-lista"></ul>
-    </main>
+        <h2>Productos (editar / eliminar)</h2>
+        <table id="admin-table">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Ingrediente</th>
+              <th>Precio</th>
+              <th>Categoría</th>
+              <th>Imagen</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="script.js"></script>

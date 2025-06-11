@@ -59,25 +59,36 @@ document.addEventListener('DOMContentLoaded', () => {
   const contLista = document.getElementById('lista-container');
   const vistaGridBtn = document.getElementById('vista-grid');
   const vistaListaBtn = document.getElementById('vista-lista');
-  const adminList = document.getElementById('admin-lista');
+  const adminTable = document.getElementById('admin-table');
   const categoriaSelect = document.getElementById('categoriaSelect');
   const productForm = document.getElementById('product-form');
   let productos = [];
 
   async function renderAdminList() {
-    if (!adminList) return;
-    adminList.innerHTML = '';
-    const res = await fetch('/api/productos');
-    const data = await res.json();
-    data.forEach(p => {
-      const li = document.createElement('li');
-      li.innerHTML = `${p.nombre} – ${p.categoria} <button data-id="${p.id}" class="btn-delete">Eliminar</button>`;
-      adminList.appendChild(li);
+    const resp = await fetch('/api/productos');
+    const productos = await resp.json();
+    const tbody = document.querySelector('#admin-table tbody');
+    tbody.innerHTML = '';
+    productos.forEach(p => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="text" value="${p.nombre}" data-field="nombre" /></td>
+        <td><input type="text" value="${p.ingrediente}" data-field="ingrediente" /></td>
+        <td><input type="number" step="0.01" value="${p.precio}" data-field="precio" /></td>
+        <td>
+          <select data-field="categoria">
+            <option value="veterinarios" ${p.categoria==='veterinarios'?'selected':''}>Veterinarios</option>
+            <option value="agroquimicos" ${p.categoria==='agroquimicos'?'selected':''}>Agroquímicos</option>
+          </select>
+        </td>
+        <td><input type="text" value="${p.imagen}" data-field="imagen" /></td>
+        <td>
+          <button class="btn-save" data-id="${p.id}">Guardar</button>
+          <button class="btn-delete" data-id="${p.id}">Eliminar</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
     });
-  }
-
-  if (adminList) {
-    renderAdminList();
   }
 
   function crearCard(p) {
@@ -172,8 +183,29 @@ document.addEventListener('DOMContentLoaded', () => {
     filtroIngrediente.addEventListener('change', filtrarCards);
   }
 
-  if (adminList) {
-    adminList.addEventListener('click', async e => {
+  // Guardar cambios
+  if (adminTable) {
+    adminTable.addEventListener('click', async e => {
+      if (e.target.classList.contains('btn-save')) {
+        const id = e.target.dataset.id;
+        const tr = e.target.closest('tr');
+        const body = {};
+        tr.querySelectorAll('[data-field]').forEach(inp => {
+          const field = inp.dataset.field;
+          const value = inp.value;
+          body[field] = field === 'precio' ? parseFloat(value) : value;
+        });
+        await fetch(`/api/productos/${id}`, {
+          method: 'PUT',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(body)
+        });
+        renderAdminList();
+      }
+    });
+
+    // Eliminar
+    adminTable.addEventListener('click', async e => {
       if (e.target.classList.contains('btn-delete')) {
         const id = e.target.dataset.id;
         await fetch(`/api/productos/${id}`, { method: 'DELETE' });
@@ -241,6 +273,10 @@ document.addEventListener('DOMContentLoaded', () => {
       };
       reader.readAsArrayBuffer(file);
     });
+  }
+
+  if (adminTable) {
+    renderAdminList();
   }
 });
 
