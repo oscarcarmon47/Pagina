@@ -68,17 +68,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const resp = await fetch('/api/productos');
     const productos = await resp.json();
     const tbody = document.querySelector('#admin-table tbody');
+    const cats = Array.from(new Set(productos.map(p => p.categoria)));
     tbody.innerHTML = '';
     productos.forEach(p => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td><input type="text" value="${p.nombre}" data-field="nombre" /></td>
-        <td><input type="text" value="${p.ingrediente}" data-field="ingrediente" /></td>
         <td><input type="number" step="0.01" value="${p.precio}" data-field="precio" /></td>
         <td>
           <select data-field="categoria">
-            <option value="veterinarios" ${p.categoria==='veterinarios'?'selected':''}>Veterinarios</option>
-            <option value="agroquimicos" ${p.categoria==='agroquimicos'?'selected':''}>Agroquímicos</option>
+            ${cats.map(cat =>
+              `<option value="${cat}" ${p.categoria===cat?'selected':''}>` +
+              `${cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase()}` +
+              `</option>`
+            ).join('')}
           </select>
         </td>
         <td><input type="text" value="${p.imagen}" data-field="imagen" /></td>
@@ -91,13 +94,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function populateCategorySelect() {
+    const sel = document.getElementById('categoriaSelect');
+    fetch('/api/productos')
+      .then(r => r.json())
+      .then(products => {
+        const cats = Array.from(new Set(products.map(p => p.categoria)));
+        sel.innerHTML = '<option value="">Selecciona categoría</option>';
+        cats.forEach(cat => {
+          const opt = document.createElement('option');
+          opt.value = cat;
+          opt.textContent = cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase();
+          sel.appendChild(opt);
+        });
+      });
+  }
+
   function crearCard(p) {
     const div = document.createElement('div');
     div.className = 'card';
+    const displayCat = p.categoria.charAt(0).toUpperCase() + p.categoria.slice(1).toLowerCase();
     div.innerHTML = `
       <img src="/images/${p.imagen}" alt="${p.nombre}">
       <h3>${p.nombre}</h3>
       <p>Ingrediente activo: ${p.ingrediente}</p>
+      <p class="categoria">${displayCat}</p>
       <p class="precio">Precio: ${p.precio}</p>
       <button class="ver-mas" data-producto="${p.nombre}">Ver más</button>
     `;
@@ -249,10 +270,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
 
         for (const row of rows) {
+          const precioNum = parseFloat(row['Precio']);
           const payload = {
             nombre: row['Nombre'],
-            ingrediente: row['Ingrediente'],
-            precio: parseFloat(row['Precio']),
+            precio: isNaN(precioNum) ? 0 : precioNum,
             categoria: row['Categoría'],
             imagen: row['Imagen']
           };
@@ -278,5 +299,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (adminTable) {
     renderAdminList();
   }
+  populateCategorySelect();
 });
 
