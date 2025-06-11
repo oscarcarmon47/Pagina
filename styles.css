@@ -83,7 +83,7 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
-    background: url("images/background.PNG") center/cover no-repeat;
+    background: url("./images/background.PNG") center/cover no-repeat;
     padding: 2rem;
     margin-top: 0px;
     color: var(--white);
