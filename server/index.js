@@ -1,15 +1,13 @@
 const express = require('express');
+const cors = require('cors');
+const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 const ExcelJS = require('exceljs');
 
 const app = express();
-app.use(express.json());
-
-const cors = require('cors');
 app.use(cors());
-
-const path = require('path');
 app.use(express.static(path.join(__dirname, '..')));
+app.use(express.json());
 
 // GET /api/productos
 app.get('/api/productos', (req, res) => {
