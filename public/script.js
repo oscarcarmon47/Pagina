@@ -68,7 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const resp = await fetch('/api/productos');
     const productos = await resp.json();
     const tbody = document.querySelector('#admin-table tbody');
-    const cats = Array.from(new Set(productos.map(p => p.categoria)));
+    const cats = Array.from(
+      new Set(productos.map(p => p.categoria).filter(cat => typeof cat === 'string' && cat.trim() !== ''))
+    );
     tbody.innerHTML = '';
     productos.forEach(p => {
       const tr = document.createElement('tr');
@@ -99,7 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch('/api/productos')
       .then(r => r.json())
       .then(products => {
-        const cats = Array.from(new Set(products.map(p => p.categoria)));
+        const cats = Array.from(
+          new Set(products.map(p => p.categoria).filter(cat => typeof cat === 'string' && cat.trim() !== ''))
+        );
         sel.innerHTML = '<option value="">Selecciona categoría</option>';
         cats.forEach(cat => {
           const opt = document.createElement('option');
