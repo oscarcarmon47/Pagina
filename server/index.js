@@ -7,7 +7,7 @@ const ExcelJS = require('exceljs');
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '..')));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // GET /api/productos
 app.get('/api/productos', (req, res) => {
@@ -80,7 +80,11 @@ app.get('/api/exportar', async (req, res) => {
 });
 
 app.get('/admin.html', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'admin.html'));
+  res.sendFile(path.join(__dirname, '..', 'public', 'admin.html'));
+});
+
+app.get('/index.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
 
 // Iniciar servidor
