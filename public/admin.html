@@ -52,13 +52,11 @@
             <button type="submit">Guardar</button>
         </form>
 
-        <h2>Productos (editar / eliminar)</h2>
-        <label for="filterCategorias">Filtrar por categoría:</label>
-        <select id="filterCategorias" multiple size="5"></select>
-        <table id="admin-table">
+        <h2>Lista de Productos</h2>
+        <table id="admin-table" class="reveal">
           <thead>
             <tr>
-              <th></th>
+              <th><input type="checkbox" id="selectAll"></th>
               <th>Nombre</th>
               <th>Precio</th>
               <th>Categoría</th>

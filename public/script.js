@@ -154,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const vistaGridBtn = document.getElementById('vista-grid');
   const vistaListaBtn = document.getElementById('vista-lista');
   const adminTable = document.getElementById('admin-table');
+  const selectAllCb = document.getElementById('selectAll');
   const categoriaSelect = document.getElementById('categoriaSelect');
   const productForm = document.getElementById('product-form');
   let productos = [];
@@ -184,12 +185,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (current && current !== titleEl) current.textContent = titleEl.textContent;
   }
 
-  async function renderAdminList(selectedCats = []) {
+  async function renderAdminList() {
     const resp = await fetch('/api/productos');
-    let productos = await resp.json();
-    if (selectedCats.length) {
-      productos = productos.filter(p => selectedCats.includes(p.categoria));
-    }
+    const productos = await resp.json();
     const tbody = document.querySelector('#admin-table tbody');
     const cats = categoriesList;
     tbody.innerHTML = '';
@@ -212,6 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       tbody.appendChild(tr);
     });
+    if (selectAllCb) selectAllCb.checked = false;
   }
 
   function populateCategorySelect() {
@@ -225,12 +224,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function populateFilterCategorias() {
-    const sel = document.getElementById('filterCategorias');
-    sel.innerHTML = categoriesList
-      .map(cat => `<option value="${cat}">${formatLabel(cat)}</option>`)
-      .join('');
-  }
 
   function crearCard(p) {
     const div = document.createElement('div');
@@ -400,6 +393,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       renderAdminList();
     });
+
+    if (selectAllCb) {
+      selectAllCb.addEventListener('change', () => {
+        const checked = selectAllCb.checked;
+        adminTable.querySelectorAll('.row-select').forEach(cb => cb.checked = checked);
+      });
+    }
   }
 
   if (productForm) {
@@ -460,13 +460,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (adminTable) {
-    document.getElementById('filterCategorias')
-      .addEventListener('change', e => {
-        const selected = Array.from(e.target.selectedOptions)
-          .map(o => o.value);
-        renderAdminList(selected);
-      });
-    populateFilterCategorias();
     renderAdminList();
   }
   populateCategorySelect();
