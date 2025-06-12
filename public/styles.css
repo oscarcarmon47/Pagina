@@ -33,7 +33,17 @@ body {
 }
 
 .logo {
+    display: flex;
+    align-items: center;
     font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.logo-header {
+    width: 40px;
+    height: auto;
+    vertical-align: middle;
+    margin-right: 0.5rem;
 }
 
 .nav-menu {
