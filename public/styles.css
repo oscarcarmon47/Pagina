@@ -42,9 +42,10 @@ body {
 }
 
 .logo-header {
-    height: 80px; 
+    height: 80px;
     width: auto;
-    vertical-align: middle;
+    /* vertical-align eliminado porque no aplica dentro de flex */
+    align-self: center;   /* centra el logo verticalmente en el contenedor flex */
     margin-right: .1rem;
 }
 
