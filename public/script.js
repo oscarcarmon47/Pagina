@@ -53,6 +53,66 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target === modal) closeModal();
   });
 
+  // Lista fija de categorías a mostrar en el front
+  const categoriesList = [
+    'MEDICAMENTOS',
+    'GARRAPATICIDAS MOSQUICIDAS',
+    'AVES DE CORRAL',
+    'INSECTICIDAS',
+    'BIOLÓGICOS',
+    'ALIMENTO PERROS Y GATOS',
+    'PESTICIDAS',
+    'ASPERSORAS',
+    'REFACCIONES',
+    'MASCOTAS',
+    'SALES MINERALES',
+    'FERRETERÍA',
+    'SEMILLAS',
+    'FERTILIZANTES',
+    'FUNGICIDAS',
+    'HERBICIDAS',
+    'COADYUVANTE',
+    'IMPLEMENTOS',
+    'INSTRUMENTAL',
+    'TALABARTERÍA',
+    'MAQUINARIA',
+    'ALIMENTOS BALANCEADOS',
+    'FORRAJES',
+    'RATICIDA',
+    'SERVICIOS'
+  ];
+
+  // Función para formatear cada palabra con inicial mayúscula
+  function formatLabel(str) {
+    return str
+      .toLowerCase()
+      .split(' ')
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
+  }
+
+  // Render de tarjetas de categorías en index.html
+  function renderCategories() {
+    const cont = document.getElementById('categories-container');
+    if (!cont) return;
+    cont.innerHTML = '';
+    categoriesList.forEach(cat => {
+      const card = document.createElement('div');
+      card.className = 'card category-card';
+      const label = formatLabel(cat);
+      card.innerHTML = `<h3>${label}</h3>`;
+      const link = document.createElement('a');
+      link.href = `lista.html?categoria=${encodeURIComponent(cat)}`;
+      link.appendChild(card);
+      cont.appendChild(link);
+    });
+  }
+
+  if (document.getElementById('categories-container')) {
+    renderCategories();
+    return; // saltar lógica de productos
+  }
+
   // Contenedores de productos
   const contVet = document.getElementById('veterinarios-container');
   const contAgr = document.getElementById('agroquimicos-container');
