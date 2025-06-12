@@ -438,21 +438,49 @@ document.addEventListener('DOMContentLoaded', () => {
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
 
-        if (option === 'overwrite') {
-          await fetch('/api/productos', { method: 'DELETE' });
+        const current = await fetch('/api/productos').then(r => r.json());
+
+        const parsedRows = rows.map(r => ({
+          nombre: r.Nombre,
+          precio: r.Precio != null ? r.Precio : 0,
+          categoria: (r.Categoria || r['Categoría'] || '').trim().toUpperCase(),
+          imagen: r.Imagen
+        }));
+
+        let finalData = [];
+
+        if (option === 'clear') {
+          finalData = parsedRows;
+        } else if (option === 'combine') {
+          finalData = current.concat(parsedRows);
+        } else if (option === 'overwrite') {
+          finalData = [...current];
+          parsedRows.forEach(p => {
+            const idx = finalData.findIndex(e => e.nombre === p.nombre);
+            if (idx >= 0) {
+              finalData[idx] = p;
+            } else {
+              finalData.push(p);
+            }
+          });
         }
 
-        for (const r of rows) {
-          const nombre = r.Nombre;
-          const precio = r.Precio != null ? r.Precio : 0;
-          const categoria = (r.Categoria || r['Categoría'] || '').trim().toUpperCase();
-          const imagen = r.Imagen;
+        const seen = new Map();
+        finalData.forEach(p => {
+          const key = `${p.nombre}|${p.precio}`;
+          if (!seen.has(key)) seen.set(key, p);
+        });
+        finalData = Array.from(seen.values());
+
+        await fetch('/api/productos', { method: 'DELETE' });
+        for (const p of finalData) {
           await fetch('/api/productos', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nombre, precio, categoria, imagen })
+            body: JSON.stringify(p)
           });
         }
+
         renderAdminList();
       };
       reader.readAsArrayBuffer(file);
