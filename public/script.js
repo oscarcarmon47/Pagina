@@ -138,9 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
       productos = productos.filter(p => selectedCats.includes(p.categoria));
     }
     const tbody = document.querySelector('#admin-table tbody');
-    const cats = Array.from(
-      new Set(productos.map(p => p.categoria).filter(cat => typeof cat === 'string' && cat.trim() !== ''))
-    );
+    const cats = categoriesList;
     tbody.innerHTML = '';
     productos.forEach(p => {
       const tr = document.createElement('tr');
@@ -167,34 +165,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function populateCategorySelect() {
     const sel = document.getElementById('categoriaSelect');
-    fetch('/api/productos')
-      .then(r => r.json())
-      .then(products => {
-        const cats = Array.from(
-          new Set(products.map(p => p.categoria).filter(cat => typeof cat === 'string' && cat.trim() !== ''))
-        );
-        sel.innerHTML = '<option value="">Selecciona categoría</option>';
-        cats.forEach(cat => {
-          const opt = document.createElement('option');
-          opt.value = cat;
-          opt.textContent = cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase();
-          sel.appendChild(opt);
-        });
-      });
+    sel.innerHTML = '<option value="">Selecciona categoría</option>';
+    categoriesList.forEach(cat => {
+      const opt = document.createElement('option');
+      opt.value = cat;
+      opt.textContent = formatLabel(cat);
+      sel.appendChild(opt);
+    });
   }
 
   function populateFilterCategorias() {
-    fetch('/api/productos')
-      .then(r => r.json())
-      .then(products => {
-        const cats = Array.from(
-          new Set(products.map(p => p.categoria).filter(c => c && c.trim()))
-        );
-        const sel = document.getElementById('filterCategorias');
-        sel.innerHTML = cats
-          .map(cat => `<option value="${cat}">${cat.charAt(0).toUpperCase()+cat.slice(1).toLowerCase()}</option>`)
-          .join('');
-      });
+    const sel = document.getElementById('filterCategorias');
+    sel.innerHTML = categoriesList
+      .map(cat => `<option value="${cat}">${formatLabel(cat)}</option>`)
+      .join('');
   }
 
   function crearCard(p) {
@@ -255,7 +239,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const res = await fetch('/api/productos');
     productos = await res.json();
     if (contLista) {
-      const productosFiltrados = productos.filter(p => p.categoria === catParam);
+      const productosFiltrados = productos.filter(p =>
+        p.categoria && p.categoria.toUpperCase() === catParam.toUpperCase()
+      );
       const cont = document.getElementById('lista-container');
       cont.innerHTML = '';
       productosFiltrados.forEach(p => {
@@ -389,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (const r of rows) {
           const nombre = r.Nombre;
           const precio = r.Precio != null ? r.Precio : 0;
-          const categoria = (r.Categoria || r['Categoría'] || '').trim().toLowerCase();
+          const categoria = (r.Categoria || r['Categoría'] || '').trim().toUpperCase();
           const imagen = r.Imagen;
           console.log('Import:', { nombre, precio, categoria, imagen });
           await fetch('/api/productos', {
