@@ -8,7 +8,7 @@
     --gray-dark: #333333;
     --transition: 0.3s ease;
     --font-base: -apple-system, sans-serif;
-    --header-logo-size: 70px; /* Ajusta aqui el tamaño del logo en el encabezado */
+    --header-height: 60px;
     font-family: var(--font-base);
 }
 
@@ -28,7 +28,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 1rem;
+    height: var(--header-height);
+    padding: 0 1rem;
     z-index: 1000;
     color: var(--white);
 }
@@ -41,8 +42,8 @@ body {
 }
 
 .logo-header {
-    width: var(--header-logo-size);
-    height: auto;
+    height: 90%;
+    width: auto;
     vertical-align: middle;
     margin-right: 0.5rem;
 }
