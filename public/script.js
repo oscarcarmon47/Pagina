@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Contenedores de productos
   const contVet = document.getElementById('veterinarios-container');
   const contAgr = document.getElementById('agroquimicos-container');
+  const contProductos = document.getElementById('productos-container');
   const contLista = document.getElementById('lista-container');
   const vistaGridBtn = document.getElementById('vista-grid');
   const vistaListaBtn = document.getElementById('vista-lista');
@@ -63,6 +64,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const categoriaSelect = document.getElementById('categoriaSelect');
   const productForm = document.getElementById('product-form');
   let productos = [];
+
+  const params = new URLSearchParams(window.location.search);
+  const catParam = params.get('categoria') || '';
+  const displayCat = catParam.charAt(0).toUpperCase() + catParam.slice(1).toLowerCase();
+  const titleEl = document.getElementById('lista-title');
+  if (titleEl) titleEl.textContent = displayCat;
 
   async function renderAdminList() {
     const resp = await fetch('/api/productos');
@@ -131,7 +138,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderProductos() {
     const query = buscador ? buscador.value.toLowerCase() : '';
-    if (contVet || contAgr) {
+    if (contProductos) {
+      const cont = document.getElementById('productos-container');
+      cont.innerHTML = '';
+      productos.forEach(p => {
+        if (!p.nombre.toLowerCase().includes(query)) return;
+        const displayCat = p.categoria.charAt(0).toUpperCase() + p.categoria.slice(1).toLowerCase();
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="/images/${p.imagen}" alt="${p.nombre}">
+          <h3>${p.nombre}</h3>
+          <p class="categoria">${displayCat}</p>
+          <p class="precio">${new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN'}).format(p.precio)}</p>
+        `;
+        const link = document.createElement('a');
+        link.href = `lista.html?categoria=${encodeURIComponent(p.categoria)}`;
+        link.appendChild(card);
+        cont.appendChild(link);
+      });
+    } else if (contLista) {
+      contLista.innerHTML = '';
+      productos.forEach(p => {
+        if (!p.nombre.toLowerCase().includes(query)) return;
+        contLista.appendChild(crearCard(p));
+      });
+    } else if (contVet || contAgr) {
       contVet && (contVet.innerHTML = '');
       contAgr && (contAgr.innerHTML = '');
       productos.forEach(p => {
@@ -140,20 +172,25 @@ document.addEventListener('DOMContentLoaded', () => {
         if (p.categoria === 'veterinarios' && contVet) contVet.appendChild(card);
         else if (contAgr) contAgr.appendChild(card);
       });
-    } else if (contLista) {
-      contLista.innerHTML = '';
-      productos.forEach(p => {
-        if (!p.nombre.toLowerCase().includes(query)) return;
-        contLista.appendChild(crearCard(p));
-      });
     }
   }
 
-  (async () => {
+  async function fetchProductos() {
     const res = await fetch('/api/productos');
     productos = await res.json();
-    renderProductos();
-  })();
+    if (contLista) {
+      const productosFiltrados = productos.filter(p => p.categoria === catParam);
+      const cont = document.getElementById('lista-container');
+      cont.innerHTML = '';
+      productosFiltrados.forEach(p => {
+        cont.appendChild(crearCard(p));
+      });
+    } else {
+      renderProductos();
+    }
+  }
+
+  fetchProductos();
 
   // Escucha mensajes de otras pestañas con precios actualizados
   bc.onmessage = e => {
