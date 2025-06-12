@@ -188,6 +188,13 @@ body {
     display: block;     /* elimina espacios en línea */
 }
 
+.category-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-bottom: 1px solid #ddd;
+}
+
 .card h3 {
     margin: 1rem 0;
 }
