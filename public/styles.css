@@ -37,15 +37,15 @@ body {
 .logo {
     display: flex;
     align-items: center;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 1.5rem;
 }
 
 .logo-header {
-    height: 30px;
+    height: 80px; 
     width: auto;
     vertical-align: middle;
-    margin-right: 0.5rem;
+    margin-right: .1rem;
 }
 
 .logo a {
