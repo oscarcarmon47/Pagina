@@ -189,6 +189,7 @@ body {
 }
 
 .category-card img {
+    /* Ajustar la imagen al ancho y que la tarjeta crezca según la proporción */
     width: 100%;       /* llena todo el ancho del contenedor */
     height: auto;      /* ajusta la altura según la proporción original */
     object-fit: contain; /* muestra la imagen completa sin recortes */
@@ -196,6 +197,11 @@ body {
     display: block;
     margin: 0 auto;
     border-bottom: 1px solid #ddd;
+}
+
+.category-card {
+    /* elimina cualquier altura fija */
+    height: auto;
 }
 
 .card h3 {
