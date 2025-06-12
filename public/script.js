@@ -143,9 +143,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (document.getElementById('categories-container')) {
+  const contCategorias = document.getElementById('categories-container');
+  if (contCategorias) {
     renderCategories();
-    return; // saltar lógica de productos
   }
 
   // Contenedores de productos
@@ -159,6 +159,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const categoriaSelect = document.getElementById('categoriaSelect');
   const productForm = document.getElementById('product-form');
   let productos = [];
+  let gridCols = 2;
+
+  function gridContainers() {
+    return [contCategorias, contVet, contAgr, contLista].filter(Boolean);
+  }
+
+  function setGridCols(cols) {
+    gridCols = cols;
+    gridContainers().forEach(c => {
+      if (!c.classList.contains('lista')) {
+        c.style.setProperty('--grid-cols', cols);
+      }
+    });
+  }
+
+  setGridCols(gridCols);
 
   const params = new URLSearchParams(window.location.search);
   const catParam = params.get('categoria') || '';
@@ -291,7 +307,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  fetchProductos();
+  if (contLista || contVet || contAgr || contProductos || adminTable) {
+    fetchProductos();
+  }
 
   // Escucha mensajes de otras pestañas con precios actualizados
   bc.onmessage = e => {
@@ -306,19 +324,24 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function toggleVista(lista) {
-    if (contVet || contAgr) {
-      contVet && contVet.classList.toggle('lista', lista);
-      contAgr && contAgr.classList.toggle('lista', lista);
-    } else if (contLista) {
-      contLista.classList.toggle('lista', lista);
-    }
+    gridContainers().forEach(c => c.classList.toggle('lista', lista));
+    if (!lista) setGridCols(gridCols);
     if (vistaGridBtn && vistaListaBtn) {
       vistaGridBtn.classList.toggle('activo', !lista);
       vistaListaBtn.classList.toggle('activo', lista);
     }
   }
 
-  if (vistaGridBtn) vistaGridBtn.addEventListener('click', () => toggleVista(false));
+  if (vistaGridBtn) {
+    vistaGridBtn.addEventListener('click', () => {
+      const anyLista = gridContainers().some(c => c.classList.contains('lista'));
+      if (anyLista) {
+        toggleVista(false);
+      } else {
+        setGridCols(gridCols === 2 ? 4 : 2);
+      }
+    });
+  }
   if (vistaListaBtn) vistaListaBtn.addEventListener('click', () => toggleVista(true));
 
   // Buscador y filtros en lista.html

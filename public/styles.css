@@ -9,6 +9,7 @@
     --transition: 0.3s ease;
     --font-base: -apple-system, sans-serif;
     --header-height: 60px;
+    --grid-cols: 2;
     font-family: var(--font-base);
 }
 
@@ -162,9 +163,10 @@ body {
     color: #fff;
 }
 
+
 .grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(var(--grid-cols), 1fr);
     gap: 1.5rem;
     max-width: 1200px;
     margin: 0 auto;
@@ -172,7 +174,7 @@ body {
 
 /* Ajuste específico para las tarjetas de categorías */
 #categories-container {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(var(--grid-cols), minmax(220px, 1fr));
     max-width: none;
 }
 
