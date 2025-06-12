@@ -42,10 +42,17 @@ body {
 }
 
 .logo-header {
-    height: 90%;
+    height: 30px;
     width: auto;
     vertical-align: middle;
     margin-right: 0.5rem;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    color: var(--white);
+    text-decoration: none;
 }
 
 .nav-menu {
