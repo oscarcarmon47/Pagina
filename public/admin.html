@@ -32,6 +32,10 @@
     <main class="productos reveal" style="padding-top: 100px;">
         <div class="controles">
             <input type="file" id="input-file" accept=".xlsx, .xls" />
+            <select id="excelOption">
+              <option value="combine">Combinar con existentes</option>
+              <option value="overwrite">Sobreescribir existentes</option>
+            </select>
             <button id="cargarExcel">Cargar precios desde Excel</button>
         </div>
 
@@ -54,15 +58,19 @@
         <table id="admin-table">
           <thead>
             <tr>
+              <th></th>
               <th>Nombre</th>
               <th>Precio</th>
               <th>Categoría</th>
               <th>Imagen</th>
-              <th>Acciones</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
+        <div class="tabla-controles">
+          <button id="guardarTabla">Guardar cambios</button>
+          <button id="eliminarSeleccionados">Eliminar seleccionados</button>
+        </div>
       </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>

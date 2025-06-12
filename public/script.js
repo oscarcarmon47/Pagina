@@ -57,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const categoriesList = [
     'MEDICAMENTOS',
     'GARRAPATICIDAS MOSQUICIDAS',
-    'AVES DE CORRAL',
     'INSECTICIDAS',
     'BIOLÓGICOS',
     'ALIMENTO PERROS Y GATOS',
@@ -85,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const categoryImages = {
     'MEDICAMENTOS': 'medicamentos.png',
     'GARRAPATICIDAS MOSQUICIDAS': 'garrapaticidas.png',
-    'AVES DE CORRAL': 'aves_de_corral.png',
     'INSECTICIDAS': 'insecticidas.png',
     'BIOLÓGICOS': 'biologicos.png',
     'ALIMENTO PERROS Y GATOS': 'alimento_perros_gatos.png',
@@ -197,7 +195,9 @@ document.addEventListener('DOMContentLoaded', () => {
     tbody.innerHTML = '';
     productos.forEach(p => {
       const tr = document.createElement('tr');
+      tr.dataset.id = p.id;
       tr.innerHTML = `
+        <td><input type="checkbox" class="row-select" /></td>
         <td><input type="text" value="${p.nombre}" data-field="nombre" /></td>
         <td><input type="number" step="0.01" value="${p.precio}" data-field="precio" /></td>
         <td>
@@ -209,10 +209,6 @@ document.addEventListener('DOMContentLoaded', () => {
           </select>
         </td>
         <td><input type="text" value="${p.imagen}" data-field="imagen" /></td>
-        <td>
-          <button class="btn-save" data-id="${p.id}">Guardar</button>
-          <button class="btn-delete" data-id="${p.id}">Eliminar</button>
-        </td>
       `;
       tbody.appendChild(tr);
     });
@@ -371,10 +367,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Guardar cambios
   if (adminTable) {
-    adminTable.addEventListener('click', async e => {
-      if (e.target.classList.contains('btn-save')) {
-        const id = e.target.dataset.id;
-        const tr = e.target.closest('tr');
+    const guardarTablaBtn = document.getElementById('guardarTabla');
+    const eliminarSeleccionadosBtn = document.getElementById('eliminarSeleccionados');
+
+    guardarTablaBtn.addEventListener('click', async () => {
+      const rows = adminTable.querySelectorAll('tbody tr');
+      for (const tr of rows) {
+        const id = tr.dataset.id;
         const body = {};
         tr.querySelectorAll('[data-field]').forEach(inp => {
           const field = inp.dataset.field;
@@ -386,17 +385,20 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: {'Content-Type':'application/json'},
           body: JSON.stringify(body)
         });
-        renderAdminList();
       }
+      renderAdminList();
     });
 
-    // Eliminar
-    adminTable.addEventListener('click', async e => {
-      if (e.target.classList.contains('btn-delete')) {
-        const id = e.target.dataset.id;
-        await fetch(`/api/productos/${id}`, { method: 'DELETE' });
-        renderAdminList();
+    eliminarSeleccionadosBtn.addEventListener('click', async () => {
+      const rows = adminTable.querySelectorAll('tbody tr');
+      for (const tr of rows) {
+        const cb = tr.querySelector('.row-select');
+        if (cb && cb.checked) {
+          const id = tr.dataset.id;
+          await fetch(`/api/productos/${id}`, { method: 'DELETE' });
+        }
       }
+      renderAdminList();
     });
   }
 
@@ -421,12 +423,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Carga de precios desde Excel en admin.html
   const inputFile = document.getElementById('input-file');
   const cargarExcelBtn = document.getElementById('cargarExcel');
+  const excelOption = document.getElementById('excelOption');
 
   if (cargarExcelBtn && inputFile) {
     cargarExcelBtn.addEventListener('click', async () => {
       const file = inputFile.files[0];
       if (!file) return;
 
+      const option = excelOption ? excelOption.value : 'combine';
       const reader = new FileReader();
       reader.onload = async () => {
         const data = reader.result;
@@ -434,12 +438,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
 
+        if (option === 'overwrite') {
+          await fetch('/api/productos', { method: 'DELETE' });
+        }
+
         for (const r of rows) {
           const nombre = r.Nombre;
           const precio = r.Precio != null ? r.Precio : 0;
           const categoria = (r.Categoria || r['Categoría'] || '').trim().toUpperCase();
           const imagen = r.Imagen;
-          console.log('Import:', { nombre, precio, categoria, imagen });
           await fetch('/api/productos', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
