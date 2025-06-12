@@ -55,6 +55,16 @@ app.delete('/api/productos/:id', (req, res) => {
   });
 });
 
+// DELETE /api/productos
+app.delete('/api/productos', (req, res) => {
+  const db = new sqlite3.Database(path.join(__dirname, 'db.sqlite'));
+  db.run('DELETE FROM productos', [], function (err) {
+    db.close();
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ changes: this.changes });
+  });
+});
+
 // GET /api/exportar
 app.get('/api/exportar', async (req, res) => {
   const db = new sqlite3.Database(path.join(__dirname, 'db.sqlite'));
