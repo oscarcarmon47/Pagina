@@ -79,8 +79,36 @@ document.addEventListener('DOMContentLoaded', () => {
     'ALIMENTOS BALANCEADOS',
     'FORRAJES',
     'RATICIDA',
-    'SERVICIOS'
+  'SERVICIOS'
   ];
+
+  const categoryImages = {
+    'MEDICAMENTOS': 'medicamentos.png',
+    'GARRAPATICIDAS MOSQUICIDAS': 'garrapaticidas.png',
+    'AVES DE CORRAL': 'aves_de_corral.png',
+    'INSECTICIDAS': 'insecticidas.png',
+    'BIOLÓGICOS': 'biologicos.png',
+    'ALIMENTO PERROS Y GATOS': 'alimento_perros_gatos.png',
+    'PESTICIDAS': 'pesticidas.png',
+    'ASPERSORAS': 'aspersoras.png',
+    'REFACCIONES': 'refacciones.png',
+    'MASCOTAS': 'mascotas.png',
+    'SALES MINERALES': 'sales_minerales.png',
+    'FERRETERÍA': 'ferreteria.png',
+    'SEMILLAS': 'semillas.png',
+    'FERTILIZANTES': 'fertilizantes.png',
+    'FUNGICIDAS': 'fungicidas.png',
+    'HERBICIDAS': 'herbicidas.png',
+    'COADYUVANTE': 'coadyuvante.png',
+    'IMPLEMENTOS': 'implementos.png',
+    'INSTRUMENTAL': 'instrumental.png',
+    'TALABARTERÍA': 'talabarteria.png',
+    'MAQUINARIA': 'maquinaria.png',
+    'ALIMENTOS BALANCEADOS': 'alimentos_balanceados.png',
+    'FORRAJES': 'forrajes.png',
+    'RATICIDA': 'raticida.png',
+    'SERVICIOS': 'servicios.png'
+  };
 
   // Función para formatear cada palabra con inicial mayúscula
   function formatLabel(str) {
@@ -99,8 +127,15 @@ document.addEventListener('DOMContentLoaded', () => {
     categoriesList.forEach(cat => {
       const card = document.createElement('div');
       card.className = 'card category-card';
+      // imagen de categoría
+      const img = document.createElement('img');
+      img.src = `/images/categories/${categoryImages[cat] || 'default.png'}`;
+      img.alt = formatLabel(cat);
+      card.appendChild(img);
       const label = formatLabel(cat);
-      card.innerHTML = `<h3>${label}</h3>`;
+      const title = document.createElement('h3');
+      title.textContent = label;
+      card.appendChild(title);
       const link = document.createElement('a');
       link.href = `lista.html?categoria=${encodeURIComponent(cat)}`;
       link.appendChild(card);
