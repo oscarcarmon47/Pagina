@@ -164,7 +164,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const catParam = params.get('categoria') || '';
   const displayCat = catParam.charAt(0).toUpperCase() + catParam.slice(1).toLowerCase();
   const titleEl = document.getElementById('lista-title');
-  if (titleEl) titleEl.textContent = displayCat;
+  if (titleEl) {
+    titleEl.textContent = displayCat;
+    const current = document.querySelector('.current-category');
+    if (current && current !== titleEl) current.textContent = titleEl.textContent;
+  }
 
   async function renderAdminList(selectedCats = []) {
     const resp = await fetch('/api/productos');
