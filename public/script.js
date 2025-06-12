@@ -149,11 +149,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <td><input type="number" step="0.01" value="${p.precio}" data-field="precio" /></td>
         <td>
           <select data-field="categoria">
-            ${cats.map(cat =>
-              `<option value="${cat}" ${p.categoria===cat?'selected':''}>` +
-              `${cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase()}` +
-              `</option>`
-            ).join('')}
+            ${cats.map(cat => `
+              <option value="${cat}" ${p.categoria===cat?'selected':''}>
+                ${cat.charAt(0).toUpperCase()+cat.slice(1).toLowerCase()}
+              </option>`).join('')}
           </select>
         </td>
         <td><input type="text" value="${p.imagen}" data-field="imagen" /></td>
@@ -387,26 +386,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
 
-        for (const row of rows) {
-          const precioNum = parseFloat(row['Precio']);
-          const payload = {
-            nombre: row['Nombre'],
-            precio: isNaN(precioNum) ? 0 : precioNum,
-            categoria: row['Categoría'],
-            imagen: row['Imagen']
-          };
-
-          try {
-            const res = await fetch('/api/productos', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload)
-            });
-            if (res.ok) console.log('Subido:', payload.nombre);
-            else console.error('Error:', payload.nombre, res.statusText);
-          } catch (err) {
-            console.error(err);
-          }
+        for (const r of rows) {
+          const nombre = r.Nombre;
+          const precio = r.Precio != null ? r.Precio : 0;
+          const categoria = (r.Categoria || r['Categoría'] || '').trim().toLowerCase();
+          const imagen = r.Imagen;
+          console.log('Import:', { nombre, precio, categoria, imagen });
+          await fetch('/api/productos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre, precio, categoria, imagen })
+          });
         }
         renderAdminList();
       };
