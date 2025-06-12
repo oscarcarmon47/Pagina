@@ -131,9 +131,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const titleEl = document.getElementById('lista-title');
   if (titleEl) titleEl.textContent = displayCat;
 
-  async function renderAdminList() {
+  async function renderAdminList(selectedCats = []) {
     const resp = await fetch('/api/productos');
-    const productos = await resp.json();
+    let productos = await resp.json();
+    if (selectedCats.length) {
+      productos = productos.filter(p => selectedCats.includes(p.categoria));
+    }
     const tbody = document.querySelector('#admin-table tbody');
     const cats = Array.from(
       new Set(productos.map(p => p.categoria).filter(cat => typeof cat === 'string' && cat.trim() !== ''))
@@ -178,6 +181,20 @@ document.addEventListener('DOMContentLoaded', () => {
           opt.textContent = cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase();
           sel.appendChild(opt);
         });
+      });
+  }
+
+  function populateFilterCategorias() {
+    fetch('/api/productos')
+      .then(r => r.json())
+      .then(products => {
+        const cats = Array.from(
+          new Set(products.map(p => p.categoria).filter(c => c && c.trim()))
+        );
+        const sel = document.getElementById('filterCategorias');
+        sel.innerHTML = cats
+          .map(cat => `<option value="${cat}">${cat.charAt(0).toUpperCase()+cat.slice(1).toLowerCase()}</option>`)
+          .join('');
       });
   }
 
@@ -398,6 +415,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (adminTable) {
+    document.getElementById('filterCategorias')
+      .addEventListener('change', e => {
+        const selected = Array.from(e.target.selectedOptions)
+          .map(o => o.value);
+        renderAdminList(selected);
+      });
+    populateFilterCategorias();
     renderAdminList();
   }
   populateCategorySelect();
