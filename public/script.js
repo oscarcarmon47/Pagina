@@ -108,6 +108,20 @@ document.addEventListener('DOMContentLoaded', () => {
     'SERVICIOS': 'servicios.png'
   };
 
+  function normalize(str) {
+    return str
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function canonicalCategory(cat) {
+    const normalized = normalize(cat.toUpperCase());
+    for (const listed of categoriesList) {
+      if (normalize(listed) === normalized) return listed;
+    }
+    return cat.toUpperCase();
+  }
+
   // Función para formatear cada palabra con inicial mayúscula
   function formatLabel(str) {
     return str
@@ -443,7 +457,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const parsedRows = rows.map(r => ({
           nombre: r.Nombre,
           precio: r.Precio != null ? r.Precio : 0,
-          categoria: (r.Categoria || r['Categoría'] || '').trim().toUpperCase(),
+          categoria: canonicalCategory((r.Categoria || r['Categoría'] || '').trim()),
           imagen: r.Imagen
         }));
 
