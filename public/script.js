@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'REFACCIONES',
     'MASCOTAS',
     'SALES MINERALES',
-    'FERRETERÍA',
+    'FERRETERIA',
     'SEMILLAS',
     'FERTILIZANTES',
     'FUNGICIDAS',
