@@ -190,6 +190,9 @@ body {
 
 .grid.lista .card img {
     width: 150px;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: contain;
     margin-right: 1rem;
 }
 
@@ -220,6 +223,7 @@ body {
     /* Ajustar la imagen al ancho y que la tarjeta crezca según la proporción */
     width: 100%;       /* llena todo el ancho del contenedor */
     height: auto;      /* ajusta la altura según la proporción original */
+    aspect-ratio: 3 / 2; /* 1536 x 1024 */
     object-fit: contain; /* muestra la imagen completa sin recortes */
     background-color: #f5f5f5;  /* Color de fondo opcional para espacios vacíos */
     display: block;
