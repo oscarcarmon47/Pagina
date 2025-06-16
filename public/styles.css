@@ -214,7 +214,7 @@ body {
 .card img {
     width: 100%;        /* ocupa todo el ancho de la card */
     height: auto;       /* ajusta altura según proporción */
-    max-height: 200px;  /* opcional: límite de altura */
+    max-height: 350px;  /* opcional: límite de altura */
     object-fit: contain; /* escala sin recortar */
     display: block;     /* elimina espacios en línea */
 }
