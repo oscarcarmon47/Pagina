@@ -176,6 +176,7 @@ body {
 #categories-container {
     grid-template-columns: repeat(var(--grid-cols), minmax(220px, 1fr));
     max-width: none;
+    max-height: fit-content;
 }
 
 .grid.lista {
@@ -185,7 +186,7 @@ body {
 .grid.lista .card {
     display: flex;
     align-items: center;
-    text-align: left;
+    text-align: center;
 }
 
 .grid.lista .card img {
@@ -197,12 +198,14 @@ body {
 }
 
 .card {
-    background: #fff;
-    border-radius: 8px;
+    background: #116207;
+    border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     overflow: hidden;
     padding: 1rem;
     text-align: center;
+    color:white;
+    text-decoration: none;
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
