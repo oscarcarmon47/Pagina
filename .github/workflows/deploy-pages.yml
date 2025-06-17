@@ -17,6 +17,7 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
+        working-directory: server
         run: npm ci
 
       - name: Fetch latest precios
