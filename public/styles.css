@@ -178,6 +178,13 @@ body {
     max-width: none;
     max-height: fit-content;
 }
+#categories-container a {
+    text-decoration: none;
+    color: inherit;
+}
+#categories-container a:hover {
+    text-decoration: none;
+}
 
 .grid.lista {
     grid-template-columns: 1fr;
