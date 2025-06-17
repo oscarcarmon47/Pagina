@@ -24,7 +24,7 @@ jobs:
         env:
           API_USER: ${{ secrets.API_USER }}
           API_PASS: ${{ secrets.API_PASS }}
-          API_URL: https://<TU_DOMINIO>/api/productos
+          API_URL: https://oscarcarmon47.github.io/Pagina/api/productos
         run: node scripts/fetch-precios.js
 
       - uses: actions/configure-pages@v3
