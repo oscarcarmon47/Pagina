@@ -235,10 +235,10 @@ body {
     height: auto;      /* ajusta la altura según la proporción original */
     aspect-ratio: 3 / 2; /* 1536 x 1024 */
     object-fit: contain; /* muestra la imagen completa sin recortes */
-    background-color: #f5f5f5;  /* Color de fondo opcional para espacios vacíos */
+    background-color: #ffffff;  /* Color de fondo opcional para espacios vacíos */
     display: block;
     margin: 0 auto;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #ffffff;
 }
 
 .category-card {
