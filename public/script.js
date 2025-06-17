@@ -241,12 +241,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderProductos() {
-    const query = buscador ? buscador.value.toLowerCase() : '';
     if (contProductos) {
       const cont = document.getElementById('productos-container');
       cont.innerHTML = '';
       productos.forEach(p => {
-        if (!p.nombre.toLowerCase().includes(query)) return;
         const displayCat = p.categoria.charAt(0).toUpperCase() + p.categoria.slice(1).toLowerCase();
         const card = document.createElement('div');
         card.className = 'card';
@@ -264,14 +262,12 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (contLista) {
       contLista.innerHTML = '';
       productos.forEach(p => {
-        if (!p.nombre.toLowerCase().includes(query)) return;
         contLista.appendChild(crearCard(p));
       });
     } else if (contVet || contAgr) {
       contVet && (contVet.innerHTML = '');
       contAgr && (contAgr.innerHTML = '');
       productos.forEach(p => {
-        if (!p.nombre.toLowerCase().includes(query)) return;
         const card = crearCard(p);
         if (p.categoria === 'veterinarios' && contVet) contVet.appendChild(card);
         else if (contAgr) contAgr.appendChild(card);
@@ -333,30 +329,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   if (vistaListaBtn) vistaListaBtn.addEventListener('click', () => toggleVista(true));
 
-  // Buscador y filtros en lista.html
-  const buscador = document.getElementById('buscador');
-  const filtroIngrediente = document.getElementById('filtro-ingrediente');
-
-  if (buscador) {
-    buscador.addEventListener('input', renderProductos);
-  }
-
-  function filtrarCards() {
-    const texto = buscador.value.toLowerCase();
-    const filtro = filtroIngrediente.value;
-    document.querySelectorAll('.grid .card').forEach(card => {
-      const nombre = card.querySelector('h3').textContent.toLowerCase();
-      const ingText = card.querySelector('p').textContent.replace('Ingrediente activo:', '').trim();
-      const coincideNombre = nombre.includes(texto);
-      const coincideIng = filtro === 'Todas' || ingText === filtro;
-      card.style.display = (coincideNombre && coincideIng) ? '' : 'none';
-    });
-  }
-
-  if (buscador && filtroIngrediente) {
-    buscador.addEventListener('input', filtrarCards);
-    filtroIngrediente.addEventListener('change', filtrarCards);
-  }
 
   // Guardar cambios
   if (adminTable) {
