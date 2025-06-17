@@ -22,7 +22,12 @@ jobs:
 
       - name: Install dependencies
         working-directory: server
-        run: npm install
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
 
 
       - uses: actions/configure-pages@v3
